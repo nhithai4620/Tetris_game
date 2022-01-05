@@ -98,6 +98,16 @@ document.addEventListener('DOMContentLoaded', () => {
         moveRight() // Sang phải
       } else if (e.keyCode === 40) {
         moveDown() // Đi xuống
+      } else if(e.keyCode === 62){
+        if (timerId) {
+          clearInterval(timerId)
+          timerId = null
+        } else {
+          draw()
+          timerId = setInterval(moveDown, 1000)
+          nextRandom = Math.floor(Math.random()*theTetrominoes.length)
+          displayShape()
+        }
       }
     }
     document.addEventListener('keyup', control) // thêm sự kiện nhấn nút
@@ -114,15 +124,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function freeze() {
       if(current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
         current.forEach(index => squares[currentPosition + index].classList.add('taken'))
-        // Nếu cục gạch rơi xuống mà đụng các ô đã taken thì nó sẽ biến thành taken
-        random = nextRandom // gạch đã rơi xong thì, gạch sẽ bằng gạch tiếp theo
-        nextRandom = Math.floor(Math.random() * theTetrominoes.length) // gạch ngẫu nhiên sẽ rơi tiếp theo
-        current = theTetrominoes[random][currentRotation] //set lại ô gạch mới sẽ rơi
-        currentPosition = 4 // set lại vị trí rơi số 4
-        draw() // vẽ
-        displayShape() // vẽ viên gạch tiếp theo ở ô dự báo
-        addScore() // tính điểm
-        gameOver() // kết thúc
+        //start a new tetromino falling
+        random = nextRandom
+        nextRandom = Math.floor(Math.random() * theTetrominoes.length)
+        current = theTetrominoes[random][currentRotation]
+        currentPosition = 4
+        draw()
+        displayShape()
+        addScore()
+        gameOver()
       }
     }
   
@@ -177,11 +187,11 @@ document.addEventListener('DOMContentLoaded', () => {
     //rotate the tetromino
     function rotate() {
       undraw()
-      currentRotation ++ //thay đổi hình dạng
+      currentRotation ++
       if(currentRotation === current.length) { //if the current rotation gets to 4, make it go back to 0
         currentRotation = 0
       }
-      current = theTetrominoes[random][currentRotation] //set hình dạng mới
+      current = theTetrominoes[random][currentRotation]
       checkRotatedPosition()
       draw()
     }
